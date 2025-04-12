@@ -66,7 +66,7 @@ exports.getAllPatients = (req, res) => {
   db.query(baseQuery, (err, results) => {
     if (err) {
       console.error('DB error:', err);
-      return res.status(500).json({ message: 'Database error', error: err });
+      return res.status(500).json({ message: 'Database error', error: err.message});
     }
     res.status(200).json(results);
   });
@@ -80,11 +80,11 @@ exports.getPatientById = (req, res) => {
   db.query(query, [patientId], (err, results) => {
     if (err) {
       console.error('Database error:', err);
-      return res.status(500).json({ message: 'Database error', error: err });
+      return res.status(500).json({ message: 'Database error', error: err.message });
     }
 
     if (results.length === 0) {
-      return res.status(404).json({ message: 'Patient not found' });
+      return res.status(404).json({ message: 'Patient not found',error: err.message });
     }
 
     res.status(200).json(results[0]);
