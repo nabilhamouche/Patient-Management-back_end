@@ -42,7 +42,7 @@ exports.addPatient = (req, res) => {
 };
 
 exports.getAllPatients = (req, res) => {
-  let baseQuery = 'SELECT * FROM patients LIMIT  20';
+  let baseQuery = 'SELECT * FROM patients';
   const sort = req.query.sort;
   const filters = [];
 
@@ -57,7 +57,7 @@ exports.getAllPatients = (req, res) => {
     baseQuery += ' WHERE ' + filters.join(' AND ');
   }
 
-
+baseQuery += ' LIMIT 20';
   const allowedSortFields = ['firstName', 'lastName', 'email', 'gender', 'dateOfBirth'];
   if (sort && allowedSortFields.includes(sort)) {
     baseQuery += ` ORDER BY ${sort}`;
