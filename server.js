@@ -18,10 +18,12 @@ CREATE TABLE IF NOT EXISTS patients (
   firstName VARCHAR(100) NOT NULL,
   lastName VARCHAR(100) NOT NULL,
   dateOfBirth DATE NOT NULL,
-  email VARCHAR(100) NOT NULL unique,
-  phone VARCHAR(20) NOT NULL unique,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  phone VARCHAR(20) NOT NULL UNIQUE,
   gender ENUM('Male', 'Female') NOT NULL,
   diagnosis TEXT NOT NULL,
+  bloodType ENUM('A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-') NOT NULL,
+  allergies TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 `;

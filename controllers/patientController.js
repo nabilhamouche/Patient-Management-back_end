@@ -1,44 +1,61 @@
 const db = require('../models/db');
 
 exports.addPatient = (req, res) => {
-  const { firstName, lastName, dateOfBirth, email, phone, gender, diagnosis } = req.body;
+  const {
+    firstName,
+    lastName,
+    dateOfBirth,
+    email,
+    phone,
+    gender,
+    diagnosis,
+    bloodType,
+    allergies
+  } = req.body;
 
-  if (!firstName || !lastName || !dateOfBirth || !email || !phone || !gender || !diagnosis) {
+  if (
+    !firstName || !lastName || !dateOfBirth || !email || !phone ||
+    !gender || !diagnosis || !bloodType
+  ) {
     return res.status(400).json({
       message: 'Validation failed. Please fill in all required fields.',
     });
   }
 
   const query = `
-    INSERT INTO patients (firstName, lastName, dateOfBirth, email, phone, gender, diagnosis)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO patients 
+    (firstName, lastName, dateOfBirth, email, phone, gender, diagnosis, bloodType, allergies)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
   
-  db.query(query, [firstName, lastName, dateOfBirth, email, phone, gender, diagnosis], (err, results) => {
-    if (err) {
-      console.error('Database error:', err);  
-      if (err.code === 'ER_DUP_ENTRY') {
-        let field = '';
-        if (err.message.includes('email')) field = 'email';
-        if (err.message.includes('phone')) field = 'phone';
-        
-        return res.status(409).json({
-          message: `Patient with this ${field} already exists.`,
+  db.query(
+    query,
+    [firstName, lastName, dateOfBirth, email, phone, gender, diagnosis, bloodType, allergies],
+    (err, results) => {
+      if (err) {
+        console.error('Database error:', err);  
+        if (err.code === 'ER_DUP_ENTRY') {
+          let field = '';
+          if (err.message.includes('email')) field = 'email';
+          if (err.message.includes('phone')) field = 'phone';
+          
+          return res.status(409).json({
+            message: `Patient with this ${field} already exists.`,
+            error: err.message
+          });
+        }
+        return res.status(500).json({
+          message: 'Failed to add patient due to a database error.',
           error: err.message
         });
       }
-      return res.status(500).json({
-        message: 'Failed to add patient due to a database error.',
-        error: err.message
-      });
-      
-    }
 
-    res.status(201).json({
-      message: 'Patient added successfully.',
-      patientId: results.insertId
-    });
-  });
+      res.status(201).json({
+        message: 'Patient added successfully.',
+        patientId: results.insertId
+      });
+    }
+  );
 };
 
 exports.getAllPatients = (req, res) => {
